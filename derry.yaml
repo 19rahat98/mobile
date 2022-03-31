@@ -1,0 +1,63 @@
+brun: flutter packages pub run build_runner build --delete-conflicting-outputs
+
+wrun: flutter packages pub run build_runner watch --delete-conflicting-outputs
+
+cbrun: flutter packages pub run build_runner clean build
+
+cpod:
+  - cd ios && pod deintegrate
+  - cd ios && rm -f Podfile.lock
+  - flutter packages get
+  - cd ios && pod install --repo-update
+
+cproj:
+  - $cdep
+  - $cpod
+
+cdep:
+  - rm -rf pubspec.lock
+  - flutter clean
+  - flutter pub upgrade
+
+# TODO: look into having the flavor determine the FLUTTER_TARGET
+bundle:
+  - flutter build appbundle -t lib/main_production.dart --flavor production
+  - open build/app/outputs/bundle/productionRelease
+
+packages: flutter packages get
+
+syncbranch:
+  - REMOTE="$(git remote)/release/4.3.1"; echo SYNCING WITH \"$REMOTE\"
+  - git merge --no-ff $REMOTE
+
+cgit:
+  - "git fetch -p && for branch in $(git branch -vv | grep ': gone]' | awk '{print $1}'); do git branch -D $branch; done"
+
+sort: flutter pub global run import_sorter:main
+
+# lcl:
+#   - cd packages/lcl && flutter pub run intl_utils:localizely_download
+
+format:
+  - flutter format lib test
+
+prep:
+  - flutter analyze lib test
+  - $format
+  - $sort
+  # - $lcl
+
+coverage: # requires `brew install lcov`
+  - flutter test --coverage
+  - genhtml -o coverage coverage/lcov.info
+  - open coverage/index.html
+
+# requires `dart pub global activate pub_version_plus`
+vmajor: pubversion major
+vminor: pubversion minor
+vpatch: pubversion patch
+vbuild: pubversion build
+
+runtests:
+  - rm -rf coverage
+  - flutter test --coverage --coverage-path coverage -r expanded --test-randomize-ordering-seed random --timeout 60s

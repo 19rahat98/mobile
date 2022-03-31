@@ -1,0 +1,30 @@
+name: eleeos
+description: A Very Good Project created by Very Good CLI.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.16.0 <3.0.0"
+
+dependencies:
+  application:
+    path: layers/application
+  flex_color_scheme: ^4.2.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.0.1
+  go_router: ^3.0.4
+  google_fonts: ^2.3.1
+  presentation:
+    path: layers/presentation
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^0.3.0
+  very_good_analysis: ^2.4.0
+
+flutter:
+  uses-material-design: true
+
+scripts: derry.yaml
