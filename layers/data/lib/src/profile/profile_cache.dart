@@ -29,7 +29,7 @@ class ProfileCache extends HiveCache implements IProfileCache {
   }
 
   @override
-  Future<RequestResult<void>> save(Profile profile) async {
+  Future<RequestResult<void>> save(PreProfile profile) async {
     try {
       await cache.put('profile', profile.toJson());
 

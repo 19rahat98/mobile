@@ -3,13 +3,14 @@ import 'package:domain/domain.dart';
 
 abstract class IProfileRemote {
   Future<RequestResult<Profile>> login(String email);
-  Future<RequestResult<Profile?>> profile(String id);
+  Future<RequestResult<PreProfile>> create(String email);
+  Future<RequestResult<PreProfile?>> profile(String id);
   Future<RequestResult<void>> logout();
   Future<RequestResult<Profile>> update(Profile profile);
 }
 
 abstract class IProfileCache {
-  Future<RequestResult<Profile?>> profile();
-  Future<RequestResult<void>> save(Profile profile);
+  Future<RequestResult<PreProfile?>> profile();
+  Future<RequestResult<void>> save(PreProfile profile);
   Future<RequestResult<void>> clear();
 }

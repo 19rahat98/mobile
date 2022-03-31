@@ -16,12 +16,17 @@ class ProfileRemote extends IProfileRemote {
   }
 
   @override
-  Future<RequestResult<Profile?>> profile(String id) {
+  Future<RequestResult<PreProfile?>> profile(String id) {
     throw UnimplementedError();
   }
 
   @override
   Future<RequestResult<Profile>> update(Profile profile) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<RequestResult<PreProfile>> create(String email) {
     throw UnimplementedError();
   }
 }
