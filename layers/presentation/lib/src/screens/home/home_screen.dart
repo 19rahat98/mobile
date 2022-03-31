@@ -1,11 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:presentation/src/routes/paths.dart';
+import 'package:presentation/src/screens/feed/feed_screen.dart';
+import 'package:presentation/src/screens/splitters/splitters_screen.dart';
 
 import 'home_view.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen(this.tab, {Key? key}) : super(key: key);
+class TabData {
+  const TabData({
+    required this.name,
+  });
 
-  final String tab;
+  final String name;
+}
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key, required this.tabIndex}) : super(key: key);
+
+  final int tabIndex;
+
+  static Map<String, TabData> get tabs => {
+        Paths.home.feed.goPath: const TabData(name: 'main'),
+      };
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late final TabController tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: widget.tabIndex,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +46,22 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('HOME'),
       ),
-      body: const HomeView(),
+      body: TabBarView(
+        controller: tabController,
+        children: const [
+          FeedScreen(),
+          SplittersScreen(),
+        ],
+      ),
+      bottomNavigationBar: SafeArea(
+        child: TabBar(
+          controller: tabController,
+          tabs: const [
+            Tab(text: 'Main'),
+            Tab(text: 'Splitters'),
+          ],
+        ),
+      ),
     );
   }
 }

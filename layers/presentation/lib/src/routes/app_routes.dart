@@ -20,6 +20,10 @@ GoRouter appRoutes({
     refreshListenable: GoRouterRefreshStream(authBloc.stream),
     routes: [
       GoRoute(
+        path: '/',
+        redirect: (_) => Paths.home.path(HomeScreen.tabs.keys.first),
+      ),
+      GoRoute(
         path: Paths.welcome.goPath,
         builder: (_, state) => const WelcomeScreen(),
         routes: [
@@ -45,8 +49,12 @@ GoRouter appRoutes({
         path: Paths.home.goPath,
         builder: (_, state) {
           final tab = state.params[Paths.home.param]!;
+          final tabIndex = HomeScreen.tabs.keys.toList().indexOf(tab);
 
-          return HomeScreen(tab);
+          return HomeScreen(
+            tabIndex: tabIndex,
+            key: state.pageKey,
+          );
         },
         routes: [
           GoRoute(

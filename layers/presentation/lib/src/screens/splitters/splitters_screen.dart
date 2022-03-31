@@ -7,11 +7,8 @@ class SplittersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('SPLITTERS'),
-      ),
-      body: const SplittersView(),
+    return const Scaffold(
+      body: SplittersView(),
     );
   }
 }

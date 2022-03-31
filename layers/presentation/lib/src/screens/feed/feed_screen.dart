@@ -7,11 +7,8 @@ class FeedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('FEED'),
-      ),
-      body: const FeedView(),
+    return const Scaffold(
+      body: FeedView(),
     );
   }
 }
