@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'profile.g.dart';
 
+@CopyWith()
 @JsonSerializable()
 class PreProfile extends Equatable {
   const PreProfile({
@@ -26,6 +27,8 @@ class PreProfile extends Equatable {
   Map<String, dynamic> toJson() => _$PreProfileToJson(this);
 
   bool get isDetailed => false;
+  // will always throw
+  Profile asDetailed() => this as Profile;
 
   @override
   List<Object?> get props => [email];
@@ -55,6 +58,9 @@ class Profile extends Equatable implements PreProfile {
 
   @override
   Map<String, dynamic> toJson() => _$ProfileToJson(this);
+
+  @override
+  Profile asDetailed() => this;
 
   @override
   final bool isDetailed;

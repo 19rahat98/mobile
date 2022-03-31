@@ -6,6 +6,65 @@ part of 'profile.dart';
 // CopyWithGenerator
 // **************************************************************************
 
+abstract class _$PreProfileCWProxy {
+  PreProfile email(String email);
+
+  PreProfile id(String id);
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PreProfile(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// PreProfile(...).copyWith(id: 12, name: "My name")
+  /// ````
+  PreProfile call({
+    String? email,
+    String? id,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfPreProfile.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfPreProfile.copyWith.fieldName(...)`
+class _$PreProfileCWProxyImpl implements _$PreProfileCWProxy {
+  final PreProfile _value;
+
+  const _$PreProfileCWProxyImpl(this._value);
+
+  @override
+  PreProfile email(String email) => this(email: email);
+
+  @override
+  PreProfile id(String id) => this(id: id);
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PreProfile(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// PreProfile(...).copyWith(id: 12, name: "My name")
+  /// ````
+  PreProfile call({
+    Object? email = const $CopyWithPlaceholder(),
+    Object? id = const $CopyWithPlaceholder(),
+  }) {
+    return PreProfile(
+      email: email == const $CopyWithPlaceholder() || email == null
+          ? _value.email
+          // ignore: cast_nullable_to_non_nullable
+          : email as String,
+      id: id == const $CopyWithPlaceholder() || id == null
+          ? _value.id
+          // ignore: cast_nullable_to_non_nullable
+          : id as String,
+    );
+  }
+}
+
+extension $PreProfileCopyWith on PreProfile {
+  /// Returns a callable class that can be used as follows: `instanceOfclass PreProfile extends Equatable.name.copyWith(...)` or like so:`instanceOfclass PreProfile extends Equatable.name.copyWith.fieldName(...)`.
+  _$PreProfileCWProxy get copyWith => _$PreProfileCWProxyImpl(this);
+}
+
 abstract class _$ProfileCWProxy {
   Profile email(String email);
 
