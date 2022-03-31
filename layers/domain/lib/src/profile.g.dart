@@ -9,13 +9,13 @@ part of 'profile.dart';
 abstract class _$ProfileCWProxy {
   Profile email(String email);
 
-  Profile firstName(String? firstName);
+  Profile firstName(String firstName);
 
   Profile id(String id);
 
-  Profile lastName(String? lastName);
+  Profile lastName(String lastName);
 
-  Profile phoneNumber(PhoneNumber? phoneNumber);
+  Profile phoneNumber(PhoneNumber phoneNumber);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Profile(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -42,16 +42,16 @@ class _$ProfileCWProxyImpl implements _$ProfileCWProxy {
   Profile email(String email) => this(email: email);
 
   @override
-  Profile firstName(String? firstName) => this(firstName: firstName);
+  Profile firstName(String firstName) => this(firstName: firstName);
 
   @override
   Profile id(String id) => this(id: id);
 
   @override
-  Profile lastName(String? lastName) => this(lastName: lastName);
+  Profile lastName(String lastName) => this(lastName: lastName);
 
   @override
-  Profile phoneNumber(PhoneNumber? phoneNumber) =>
+  Profile phoneNumber(PhoneNumber phoneNumber) =>
       this(phoneNumber: phoneNumber);
 
   @override
@@ -74,28 +74,29 @@ class _$ProfileCWProxyImpl implements _$ProfileCWProxy {
           ? _value.email
           // ignore: cast_nullable_to_non_nullable
           : email as String,
-      firstName: firstName == const $CopyWithPlaceholder()
+      firstName: firstName == const $CopyWithPlaceholder() || firstName == null
           ? _value.firstName
           // ignore: cast_nullable_to_non_nullable
-          : firstName as String?,
+          : firstName as String,
       id: id == const $CopyWithPlaceholder() || id == null
           ? _value.id
           // ignore: cast_nullable_to_non_nullable
           : id as String,
-      lastName: lastName == const $CopyWithPlaceholder()
+      lastName: lastName == const $CopyWithPlaceholder() || lastName == null
           ? _value.lastName
           // ignore: cast_nullable_to_non_nullable
-          : lastName as String?,
-      phoneNumber: phoneNumber == const $CopyWithPlaceholder()
-          ? _value.phoneNumber
-          // ignore: cast_nullable_to_non_nullable
-          : phoneNumber as PhoneNumber?,
+          : lastName as String,
+      phoneNumber:
+          phoneNumber == const $CopyWithPlaceholder() || phoneNumber == null
+              ? _value.phoneNumber
+              // ignore: cast_nullable_to_non_nullable
+              : phoneNumber as PhoneNumber,
     );
   }
 }
 
 extension $ProfileCopyWith on Profile {
-  /// Returns a callable class that can be used as follows: `instanceOfclass Profile extends Equatable.name.copyWith(...)` or like so:`instanceOfclass Profile extends Equatable.name.copyWith.fieldName(...)`.
+  /// Returns a callable class that can be used as follows: `instanceOfclass Profile extends Equatable implements PreProfile.name.copyWith(...)` or like so:`instanceOfclass Profile extends Equatable implements PreProfile.name.copyWith.fieldName(...)`.
   _$ProfileCWProxy get copyWith => _$ProfileCWProxyImpl(this);
 }
 
@@ -103,30 +104,31 @@ extension $ProfileCopyWith on Profile {
 // JsonSerializableGenerator
 // **************************************************************************
 
-Profile _$ProfileFromJson(Map json) => Profile(
-      id: json['id'] as String,
+PreProfile _$PreProfileFromJson(Map json) => PreProfile(
       email: json['email'] as String,
-      firstName: json['firstName'] as String?,
-      lastName: json['lastName'] as String?,
-      phoneNumber: json['phoneNumber'] == null
-          ? null
-          : PhoneNumber.fromJson(json['phoneNumber'] as Map),
+      id: json['id'] as String,
     );
 
-Map<String, dynamic> _$ProfileToJson(Profile instance) {
-  final val = <String, dynamic>{
-    'id': instance.id,
-  };
+Map<String, dynamic> _$PreProfileToJson(PreProfile instance) =>
+    <String, dynamic>{
+      'email': instance.email,
+      'id': instance.id,
+    };
 
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
+Profile _$ProfileFromJson(Map json) => Profile._(
+      id: json['id'] as String,
+      email: json['email'] as String,
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      phoneNumber: PhoneNumber.fromJson(json['phoneNumber'] as Map),
+      isDetailed: json['isDetailed'] as bool,
+    );
 
-  writeNotNull('firstName', instance.firstName);
-  writeNotNull('lastName', instance.lastName);
-  val['email'] = instance.email;
-  writeNotNull('phoneNumber', instance.phoneNumber?.toJson());
-  return val;
-}
+Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
+      'isDetailed': instance.isDetailed,
+      'id': instance.id,
+      'firstName': instance.firstName,
+      'lastName': instance.lastName,
+      'phoneNumber': instance.phoneNumber.toJson(),
+      'email': instance.email,
+    };

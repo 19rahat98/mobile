@@ -5,26 +5,67 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'profile.g.dart';
 
-@CopyWith()
 @JsonSerializable()
-class Profile extends Equatable {
+class PreProfile extends Equatable {
+  const PreProfile({
+    required this.email,
+    required this.id,
+  });
+
+  factory PreProfile.fromJson(Map<String, dynamic> json) {
+    if (json['isDetailed'] == true) {
+      return _$ProfileFromJson(json);
+    } else {
+      return _$PreProfileFromJson(json);
+    }
+  }
+
+  final String email;
+  final String id;
+
+  Map<String, dynamic> toJson() => _$PreProfileToJson(this);
+
+  bool get isDetailed => false;
+
+  @override
+  List<Object?> get props => [email];
+}
+
+@CopyWith()
+@JsonSerializable(constructor: '_')
+class Profile extends Equatable implements PreProfile {
   const Profile({
     required this.id,
     required this.email,
-    this.firstName,
-    this.lastName,
-    this.phoneNumber,
+    required this.firstName,
+    required this.lastName,
+    required this.phoneNumber,
+  }) : isDetailed = true;
+
+  const Profile._({
+    required this.id,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+    required this.phoneNumber,
+    required this.isDetailed,
   });
 
   factory Profile.fromJson(Map json) => _$ProfileFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$ProfileToJson(this);
 
+  @override
+  final bool isDetailed;
+  @override
   final String id;
-  final String? firstName;
-  final String? lastName;
+  final String firstName;
+  final String lastName;
+  final PhoneNumber phoneNumber;
+
+  @override
   final String email;
-  final PhoneNumber? phoneNumber;
 
   @override
   List<Object?> get props => [
