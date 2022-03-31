@@ -28,3 +28,12 @@ class _Ready extends ProfileState {
   @override
   List<Object?> get props => [profile];
 }
+
+class _OnBoardingNeeded extends ProfileState {
+  const _OnBoardingNeeded(this.profile);
+
+  final PreProfile? profile;
+
+  @override
+  List<Object?> get props => [profile];
+}

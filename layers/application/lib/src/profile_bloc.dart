@@ -32,12 +32,12 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   late String? _profileId;
 
   Future<void> _init(_Init init, _Emitter emit) async {
-    late Profile profile;
+    late PreProfile profile;
 
     final cachedResult = await _profileCache.profile();
     if (cachedResult.isSuccess && cachedResult.value != null) {
       profile = cachedResult.value!;
-      emit(_Ready(profile));
+      await emitProfile(emit, profile);
     }
 
     if (cachedResult.isError || cachedResult.value == null) {
@@ -60,10 +60,18 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     await _profileCache.save(result);
-    emit(_Ready(result));
+    await emitProfile(emit, result);
   }
 
-  FutureOr<Profile?> _getProfile(_Emitter emit, [String? id]) async {
+  Future<void> emitProfile(_Emitter emit, PreProfile profile) async {
+    if (profile.isDetailed) {
+      emit(_Ready(profile.asDetailed()));
+    } else {
+      emit(_OnBoardingNeeded(profile));
+    }
+  }
+
+  FutureOr<PreProfile?> _getProfile(_Emitter emit, [String? id]) async {
     if (state is _Ready) {
       return (state as _Ready).profile;
     }
@@ -88,7 +96,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     if (remoteResult.value != null) {
-      emit(_Ready(remoteResult.value));
+      await emitProfile(emit, remoteResult.value!);
       await _profileCache.save(remoteResult.value!);
     } else {
       emit(const _Ready(null));
@@ -108,10 +116,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
 
     await _updateProfile(
-      profile.copyWith(
-        firstName: event.firstName,
-        lastName: event.lastName,
-      ),
+      profile.asDetailed().copyWith(
+            firstName: event.firstName,
+            lastName: event.lastName,
+          ),
       emit,
     );
   }
@@ -159,7 +167,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       return;
     }
 
-    await _updateProfile(profile.copyWith(email: event.email), emit);
+    await _updateProfile(
+      profile.asDetailed().copyWith(email: event.email),
+      emit,
+    );
   }
 
   Future<void> _updateProfile(Profile profile, _Emitter emit) async {

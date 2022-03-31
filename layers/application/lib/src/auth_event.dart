@@ -12,10 +12,12 @@ class _Init extends AuthEvent {
 }
 
 class _SignIn extends AuthEvent {
-  const _SignIn();
+  const _SignIn({required this.needsOnboarding});
+
+  final bool needsOnboarding;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [needsOnboarding];
 }
 
 class _SignOut extends AuthEvent {
@@ -26,8 +28,8 @@ class _SignOut extends AuthEvent {
 }
 
 extension AuthBlocX on AuthBloc {
-  void signIn() {
-    add(const _SignIn());
+  void signIn({required bool needsOnboarding}) {
+    add(_SignIn(needsOnboarding: needsOnboarding));
   }
 
   void signOut() {

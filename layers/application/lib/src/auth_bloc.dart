@@ -4,17 +4,19 @@ import 'package:application/util/cache_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'auth_bloc.g.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 typedef _Emitter = Emitter<AuthState>;
 
 class AuthBloc extends CacheBloc<AuthEvent, AuthState> {
-  AuthBloc() : super(const _NotAuthenticated()) {
+  AuthBloc() : super(const _Loading()) {
     on<_Init>(_init);
-    on<_SignIn>((_, emit) => _authorize(emit));
-    on<_SignOut>((_, emit) => _removeAuth(emit));
+    on<_SignIn>(_signIn);
+    on<_SignOut>(_signOut);
 
     add(const _Init());
   }
@@ -25,39 +27,32 @@ class AuthBloc extends CacheBloc<AuthEvent, AuthState> {
   }
 
   Future<void> _init(_Init event, _Emitter emit) async {
-    final cachedState = await retrieve();
-
-    if (cachedState == null) {
-      await _removeAuth(emit);
-      return;
-    }
-
-    if (cachedState.isAuthenticated) {
-      await _authorize(emit);
-    }
+    await hydrate(emit);
   }
 
-  Future<void> _removeAuth(_Emitter emit) async {
+  Future<void> _signIn(_SignIn event, _Emitter emit) async {
+    emit(_Authenticated(needsOnboarding: event.needsOnboarding));
+  }
+
+  Future<void> _signOut(_SignOut event, _Emitter emit) async {
     emit(const _NotAuthenticated());
-  }
-
-  Future<void> _authorize(_Emitter emit) async {
-    emit(const _Authenticated());
   }
 
   @override
   AuthState? fromJson(Map<String, dynamic>? json) {
-    final isSignedIn = json?['value'] as bool?;
-
-    if (isSignedIn ?? false) {
-      return const _Authenticated();
-    } else {
+    if (json == null) {
       return const _NotAuthenticated();
     }
+
+    return _Authenticated.fromJson(json);
   }
 
   @override
   Map<String, dynamic>? toJson(AuthState state) {
-    return <String, dynamic>{'value': state.isAuthenticated};
+    if (state.isLoading) {
+      return null;
+    }
+
+    return state.asAuthenticated.toJson();
   }
 }
