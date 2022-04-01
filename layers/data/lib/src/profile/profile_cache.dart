@@ -6,7 +6,7 @@ import 'package:data/src/util/request_result.dart';
 import 'package:domain/domain.dart';
 import 'package:hive/hive.dart';
 
-class ProfileCache extends HiveCache implements IProfileCache {
+class ProfileCache extends HiveCache<Map> implements IProfileCache {
   ProfileCache({Box? box}) : super('profile', box: box);
 
   @override
