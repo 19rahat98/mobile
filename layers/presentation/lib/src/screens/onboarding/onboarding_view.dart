@@ -14,7 +14,7 @@ class OnboardingView extends StatelessWidget {
             onPressed: () {
               context.push(Paths.onboarding.account.path);
             },
-            child: const Text('Create Profile'),
+            child: const Text('Lets get started!'),
           )
         ],
       ),
