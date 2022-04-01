@@ -28,7 +28,7 @@ GoRouter appRoutes({
     routes: [
       GoRoute(
         path: '/',
-        redirect: (_) => Paths.home.path(HomeScreen.tabs.keys.first),
+        redirect: (_) => HomeScreen.tabs.keys.first,
       ),
       GoRoute(
         path: Paths.pin.path,
@@ -78,7 +78,8 @@ GoRouter appRoutes({
         path: Paths.home.goPath,
         builder: (_, state) {
           final tab = state.params[Paths.home.param]!;
-          final tabIndex = HomeScreen.tabs.keys.toList().indexOf(tab);
+          final keys = HomeScreen.tabs.keys.toList();
+          final tabIndex = keys.indexOf(Paths.home.path(tab));
 
           return HomeScreen(
             tabIndex: max(0, tabIndex),
@@ -109,37 +110,28 @@ GoRouter appRoutes({
           return null;
         }
 
-        final from = subLocation != '/' ? '?next=$subLocation' : '';
-
-        return '${Paths.welcome.path}$from';
+        return Paths.welcome.path;
       }
 
       final authenticatedState = authBloc.state.asAuthenticated;
-      final fromParam = state.queryParams['next'];
 
       // if on welcome screen (and authenticated),
       // redirect to home screen
       if (onWelcomeScreen || onOnboarding) {
-        final nextFrom = fromParam != null ? '?next=$fromParam' : '';
-
         // go to onboarding
         if (authenticatedState.needsOnboarding) {
           if (onOnboarding) {
             return null;
           }
 
-          return Paths.onboarding.path + nextFrom;
+          return Paths.onboarding.path;
 
           // lock the screen
         } else if (authenticatedState.isLocked) {
-          return Paths.pin.path + nextFrom;
+          return Paths.pin.path;
         }
 
-        if (fromParam != null) {
-          return fromParam;
-        } else {
-          return '/';
-        }
+        return '/';
       }
 
       // no need to redirect

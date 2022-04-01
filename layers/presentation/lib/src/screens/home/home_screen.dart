@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:presentation/src/routes/paths.dart';
 import 'package:presentation/src/screens/feed/feed_screen.dart';
 import 'package:presentation/src/screens/splitters/splitters_screen.dart';
@@ -17,7 +18,8 @@ class HomeScreen extends StatefulWidget {
   final int tabIndex;
 
   static Map<String, TabData> get tabs => {
-        Paths.home.feed.goPath: const TabData(name: 'main'),
+        Paths.home.feed.path: const TabData(name: 'main'),
+        Paths.home.splitters.path: const TabData(name: 'splitters'),
       };
 
   @override
@@ -54,6 +56,9 @@ class _HomeScreenState extends State<HomeScreen>
       bottomNavigationBar: SafeArea(
         child: TabBar(
           controller: tabController,
+          onTap: (index) {
+            context.go(HomeScreen.tabs.keys.elementAt(index));
+          },
           tabs: const [
             Tab(text: 'Main'),
             Tab(text: 'Splitters'),
