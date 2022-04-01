@@ -4,6 +4,7 @@ abstract class ProfileState extends Equatable {
   const ProfileState();
 
   bool get isReady => this is _Ready;
+  bool get isOnboardingNeeded => this is _OnBoardingNeeded;
   bool get isLoading => this is _Loading;
   bool get isError => this is _Error;
 

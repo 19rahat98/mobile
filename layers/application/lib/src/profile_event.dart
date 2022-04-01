@@ -31,6 +31,16 @@ class _Login extends ProfileEvent {
   List<Object> get props => [email, password];
 }
 
+class _Create extends ProfileEvent {
+  const _Create(this.email, this.password);
+
+  final String email;
+  final String password;
+
+  @override
+  List<Object> get props => [email, password];
+}
+
 class _Logout extends ProfileEvent {
   const _Logout();
 
@@ -48,12 +58,18 @@ class _UpdateEmail extends ProfileEvent {
 }
 
 extension ProfileBlocX on ProfileBloc {
-  void updateName(String firstName, String lastName) =>
-      add(_UpdateName(firstName, lastName));
+  void createProfile(String email, String password) {
+    add(_Create(email, password));
+  }
 
-  void logIn(String email, String password) => add(_Login(email, password));
+  void login(String email, String password) => add(
+        _Login(email, password),
+      );
 
-  void logOut() => add(const _Logout());
+  void logout() => add(const _Logout());
 
   void updateEmail(String email) => add(_UpdateEmail(email));
+
+  void updateName(String firstName, String lastName) =>
+      add(_UpdateName(firstName, lastName));
 }

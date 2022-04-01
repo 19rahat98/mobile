@@ -21,9 +21,10 @@ class ProfileBloc extends CacheBloc<ProfileEvent, ProfileState> {
         _profileCache = profileCache,
         super(const _Loading()) {
     on<_Init>(_init);
-    on<_UpdateName>(_updateName);
+    on<_Create>(_create);
     on<_Login>(_login);
     on<_Logout>(_logout);
+    on<_UpdateName>(_updateName);
     on<_UpdateEmail>(_updateEmail);
   }
 
@@ -62,10 +63,10 @@ class ProfileBloc extends CacheBloc<ProfileEvent, ProfileState> {
 
     final result = remoteResult.value;
 
-    await emitProfile(emit, result);
+    await _emitProfile(emit, result);
   }
 
-  Future<void> emitProfile(_Emitter emit, PreProfile? profile) async {
+  Future<void> _emitProfile(_Emitter emit, PreProfile? profile) async {
     if (profile == null) {
       return emit(const _Ready(null));
     }
@@ -115,7 +116,7 @@ class ProfileBloc extends CacheBloc<ProfileEvent, ProfileState> {
     _Login event,
     _Emitter emit,
   ) async {
-    final loginResult = await _profileRepo.login(event.email);
+    final loginResult = await _profileRepo.login(event.email, event.password);
 
     if (loginResult.isError) {
       emit(const _Error('Failed to login'));
@@ -124,7 +125,7 @@ class ProfileBloc extends CacheBloc<ProfileEvent, ProfileState> {
 
     final result = loginResult.value;
 
-    emit(_Ready(result));
+    await _emitProfile(emit, result);
   }
 
   Future<void> _logout(
@@ -168,6 +169,19 @@ class ProfileBloc extends CacheBloc<ProfileEvent, ProfileState> {
     final result = updateResult.value;
 
     emit(_Ready(result));
+  }
+
+  FutureOr<void> _create(_Create event, _Emitter emit) async {
+    final createResult = await _profileRepo.create(event.email, event.password);
+
+    if (createResult.isError) {
+      emit(const _Error('Failed to create profile'));
+      return;
+    }
+
+    final result = createResult.value;
+
+    await _emitProfile(emit, result);
   }
 
   @override
