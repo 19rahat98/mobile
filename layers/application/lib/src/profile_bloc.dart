@@ -25,14 +25,10 @@ class ProfileBloc extends CacheBloc<ProfileEvent, ProfileState> {
     on<_Login>(_login);
     on<_Logout>(_logout);
     on<_UpdateEmail>(_updateEmail);
-
-    _profileId = null;
   }
 
   final IProfileRemote _profileRepo;
   final IProfileCache _profileCache;
-
-  late String? _profileId;
 
   @override
   Future<void> onChange(Change<ProfileState> change) async {
