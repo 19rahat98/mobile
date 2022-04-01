@@ -11,14 +11,13 @@ class _Init extends ProfileEvent {
   List<Object> get props => [];
 }
 
-class _UpdateName extends ProfileEvent {
-  const _UpdateName(this.firstName, this.lastName);
+class _UpdateProfile extends ProfileEvent {
+  const _UpdateProfile(this.profile);
 
-  final String firstName;
-  final String lastName;
+  final Profile profile;
 
   @override
-  List<Object> get props => [firstName, lastName];
+  List<Object> get props => [profile];
 }
 
 class _Login extends ProfileEvent {
@@ -31,14 +30,32 @@ class _Login extends ProfileEvent {
   List<Object> get props => [email, password];
 }
 
-class _Create extends ProfileEvent {
-  const _Create(this.email, this.password);
+class _ForgotPassword extends ProfileEvent {
+  const _ForgotPassword(this.email);
+
+  final String email;
+
+  @override
+  List<Object> get props => [email];
+}
+
+class _CreateAccount extends ProfileEvent {
+  const _CreateAccount(this.email, this.password);
 
   final String email;
   final String password;
 
   @override
   List<Object> get props => [email, password];
+}
+
+class _CreatePin extends ProfileEvent {
+  const _CreatePin(this.pin);
+
+  final String pin;
+
+  @override
+  List<Object> get props => [pin];
 }
 
 class _Logout extends ProfileEvent {
@@ -58,18 +75,31 @@ class _UpdateEmail extends ProfileEvent {
 }
 
 extension ProfileBlocX on ProfileBloc {
-  void createProfile(String email, String password) {
-    add(_Create(email, password));
+  void createAccount(String email, String password) {
+    add(_CreateAccount(email, password));
   }
 
-  void login(String email, String password) => add(
-        _Login(email, password),
-      );
+  void createPin(String pin) {
+    add(_CreatePin(pin));
+  }
 
-  void logout() => add(const _Logout());
+  void login(String email, String password) {
+    add(_Login(email, password));
+  }
 
-  void updateEmail(String email) => add(_UpdateEmail(email));
+  void forgotPassword(String email) {
+    add(_ForgotPassword(email));
+  }
 
-  void updateName(String firstName, String lastName) =>
-      add(_UpdateName(firstName, lastName));
+  void logout() {
+    add(const _Logout());
+  }
+
+  void updateEmail(String email) {
+    add(_UpdateEmail(email));
+  }
+
+  void updateProfile(Profile profile) {
+    add(_UpdateProfile(profile));
+  }
 }
