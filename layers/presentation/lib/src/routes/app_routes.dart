@@ -2,11 +2,15 @@ import 'package:application/application.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:presentation/src/routes/paths.dart';
+import 'package:presentation/src/screens/allow_notifications/allow_notifications_screen.dart';
 import 'package:presentation/src/screens/create_account/create_account_screen.dart';
+import 'package:presentation/src/screens/create_pin/create_pin_screen.dart';
+import 'package:presentation/src/screens/create_profile/create_profile_screen.dart';
 import 'package:presentation/src/screens/create_splitter/create_splitter_screen.dart';
 import 'package:presentation/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:presentation/src/screens/home/home_screen.dart';
 import 'package:presentation/src/screens/login/login_screen.dart';
+import 'package:presentation/src/screens/onboarding/onboarding_screen.dart';
 import 'package:presentation/src/screens/pin/pin_screen.dart';
 import 'package:presentation/src/screens/profile/profile_screen.dart';
 import 'package:presentation/src/screens/reset_password/reset_password_screen.dart';
@@ -47,6 +51,24 @@ GoRouter appRoutes({
           GoRoute(
             path: Paths.welcome.createAccount.goPath,
             builder: (_, state) => const CreateAccountScreen(),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: Paths.onboarding.goPath,
+        builder: (_, state) => const OnboardingScreen(),
+        routes: [
+          GoRoute(
+            path: Paths.onboarding.account.goPath,
+            builder: (_, state) => const CreateProfileScreen(),
+          ),
+          GoRoute(
+            path: Paths.onboarding.pin.goPath,
+            builder: (_, state) => const CreatePinScreen(),
+          ),
+          GoRoute(
+            path: Paths.onboarding.allowNotification.goPath,
+            builder: (_, state) => const AllowNotificationsScreen(),
           ),
         ],
       ),
