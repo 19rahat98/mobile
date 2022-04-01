@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:presentation/src/routes/paths.dart';
 
-class CreateProfileView extends StatelessWidget {
-  const CreateProfileView({Key? key}) : super(key: key);
+class OnboardingView extends StatelessWidget {
+  const OnboardingView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +12,9 @@ class CreateProfileView extends StatelessWidget {
         children: <Widget>[
           ElevatedButton(
             onPressed: () {
-              context.push(Paths.onboarding.pin.path);
+              context.push(Paths.onboarding.account.path);
             },
-            child: const Text('Create Pin'),
+            child: const Text('Create Profile'),
           )
         ],
       ),
