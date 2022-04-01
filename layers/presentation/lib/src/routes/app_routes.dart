@@ -112,7 +112,7 @@ GoRouter appRoutes({
       // if not logged in, redirect to welcome screen
       // if not there already
       if (!authBloc.state.isAuthenticated) {
-        if (onWelcomeScreen || onOnboardingScreen) {
+        if (onWelcomeScreen) {
           return null;
         }
 
@@ -137,6 +137,17 @@ GoRouter appRoutes({
         }
 
         return Paths.onboarding.path;
+      }
+
+      final onCreatePinScreen =
+          subLocation.startsWith(Paths.onboarding.pin.path);
+
+      if (authenticatedState.isPinNeeded) {
+        if (onCreatePinScreen) {
+          return null;
+        }
+
+        return Paths.onboarding.pin.path;
       }
 
       if (onWelcomeScreen || onOnboardingScreen || onLockScreen) {

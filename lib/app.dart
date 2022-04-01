@@ -61,35 +61,30 @@ class _AppState extends State<App> {
       ],
       child: BlocListener<ProfileBloc, ProfileState>(
         listenWhen: (p, c) =>
+            // when the pin needs to be created/reset
+            c.isPinNeeded ||
             // when states change completely
-            p.runtimeType != c.runtimeType ||
+            (p.runtimeType != c.runtimeType) ||
             // when profile is set to null
-            (c.isReady && c.asReady.profile == null) ||
+            c.profile == null ||
             // when profile was null, but is now set
             // (i.e. user just logged in)
-            (p.isReady &&
-                p.asReady.profile == null &&
-                ((c.isReady && c.asReady.profile != null) ||
-                    c.isOnboardingNeeded)),
+            (p.profile == null && c.profile != null),
         listener: (context, state) {
-          if (!(state.isReady || state.isOnboardingNeeded)) {
+          if (state.profile == null) {
             authBloc.removeAuthentication();
             return;
           }
 
           if (state.isOnboardingNeeded) {
             authBloc.authenticate(needsOnboarding: true);
-            return;
-          }
-
-          final ready = state.asReady;
-
-          if (ready.profile == null) {
-            authBloc.removeAuthentication();
-          } else if (!ready.profile!.isDetailed) {
-            authBloc.authenticate(needsOnboarding: true);
-          } else if (ready.profile!.isDetailed) {
-            authBloc.authenticate(needsOnboarding: false);
+            // needs onboarding if profile is not detailed
+          } else if (state.isPinNeeded) {
+            authBloc.resetPin();
+          } else {
+            authBloc.authenticate(
+              needsOnboarding: state.profile?.isDetailed == false,
+            );
           }
         },
         child: BlocBuilder<ThemeBloc, ThemeState>(
