@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:application/application.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -79,7 +81,7 @@ GoRouter appRoutes({
           final tabIndex = HomeScreen.tabs.keys.toList().indexOf(tab);
 
           return HomeScreen(
-            tabIndex: tabIndex,
+            tabIndex: max(0, tabIndex),
             key: state.pageKey,
           );
         },
@@ -88,21 +90,22 @@ GoRouter appRoutes({
             path: Paths.home.splitters.create.goPath,
             builder: (_, state) => const CreateSplitterScreen(),
           ),
-          GoRoute(
-            path: Paths.home.profile.goPath,
-            builder: (_, state) => const ProfileScreen(),
-          )
         ],
+      ),
+      GoRoute(
+        path: Paths.profile.goPath,
+        builder: (_, state) => const ProfileScreen(),
       ),
     ],
     redirect: (state) {
       final subLocation = state.subloc;
       final onWelcomeScreen = subLocation.startsWith(Paths.welcome.path);
+      final onOnboarding = subLocation.startsWith(Paths.onboarding.path);
 
       // if not logged in, redirect to welcome screen
       // if not there already
       if (!authBloc.state.isAuthenticated) {
-        if (onWelcomeScreen) {
+        if (onWelcomeScreen || onOnboarding) {
           return null;
         }
 
@@ -112,15 +115,19 @@ GoRouter appRoutes({
       }
 
       final authenticatedState = authBloc.state.asAuthenticated;
+      final fromParam = state.queryParams['next'];
 
       // if on welcome screen (and authenticated),
       // redirect to home screen
-      if (onWelcomeScreen) {
-        final fromParam = state.queryParams['next'];
+      if (onWelcomeScreen || onOnboarding) {
         final nextFrom = fromParam != null ? '?next=$fromParam' : '';
 
         // go to onboarding
         if (authenticatedState.needsOnboarding) {
+          if (onOnboarding) {
+            return null;
+          }
+
           return Paths.onboarding.path + nextFrom;
 
           // lock the screen

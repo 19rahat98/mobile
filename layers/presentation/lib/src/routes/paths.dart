@@ -7,6 +7,7 @@ class Paths {
   static OnboardingPath get onboarding => OnboardingPath();
   static HomePath get home => HomePath();
   static Path get pin => Path('pin');
+  static Path get profile => Path('profile');
 }
 
 class WelcomePath extends Path {
@@ -29,7 +30,6 @@ class OnboardingPath extends Path {
 class HomePath extends PathWithParam {
   HomePath() : super('home', 'homeTab');
 
-  Path get profile => Path('profile', pathWithoutParam);
   Path get feed => Path('feed', pathWithoutParam);
   SplittersPath get splitters => SplittersPath(this);
 }
