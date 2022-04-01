@@ -6,7 +6,7 @@ class Paths {
   static WelcomePath get welcome => WelcomePath();
   static OnboardingPath get onboarding => OnboardingPath();
   static HomePath get home => HomePath();
-  Path get pin => Path('pin');
+  static Path get pin => Path('pin');
 }
 
 class WelcomePath extends Path {

@@ -7,6 +7,7 @@ import 'package:presentation/src/screens/create_splitter/create_splitter_screen.
 import 'package:presentation/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:presentation/src/screens/home/home_screen.dart';
 import 'package:presentation/src/screens/login/login_screen.dart';
+import 'package:presentation/src/screens/pin/pin_screen.dart';
 import 'package:presentation/src/screens/profile/profile_screen.dart';
 import 'package:presentation/src/screens/reset_password/reset_password_screen.dart';
 import 'package:presentation/src/screens/welcome/welcome_screen.dart';
@@ -22,6 +23,10 @@ GoRouter appRoutes({
       GoRoute(
         path: '/',
         redirect: (_) => Paths.home.path(HomeScreen.tabs.keys.first),
+      ),
+      GoRoute(
+        path: Paths.pin.path,
+        builder: (_, state) => const PinScreen(),
       ),
       GoRoute(
         path: Paths.welcome.goPath,
@@ -70,12 +75,12 @@ GoRouter appRoutes({
     ],
     redirect: (state) {
       final subLocation = state.subloc;
-      final loggingIn = subLocation.startsWith(Paths.welcome.path);
+      final onWelcomeScreen = subLocation.startsWith(Paths.welcome.path);
 
       // if not logged in, redirect to welcome screen
       // if not there already
       if (!authBloc.state.isAuthenticated) {
-        if (loggingIn) {
+        if (onWelcomeScreen) {
           return null;
         }
 
@@ -84,10 +89,23 @@ GoRouter appRoutes({
         return '${Paths.welcome.path}$from';
       }
 
-      // if logged in (and signed in),
+      final authenticatedState = authBloc.state.asAuthenticated;
+
+      // if on welcome screen (and authenticated),
       // redirect to home screen
-      if (loggingIn) {
+      if (onWelcomeScreen) {
         final fromParam = state.queryParams['next'];
+        final nextFrom = fromParam != null ? '?next=$fromParam' : '';
+
+        // go to onboarding
+        if (authenticatedState.needsOnboarding) {
+          return Paths.onboarding.path + nextFrom;
+
+          // lock the screen
+        } else if (authenticatedState.isLocked) {
+          return Paths.pin.path + nextFrom;
+        }
+
         if (fromParam != null) {
           return fromParam;
         } else {
