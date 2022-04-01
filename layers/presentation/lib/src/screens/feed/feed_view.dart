@@ -7,7 +7,7 @@ class FeedView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(
-        'this is the Splitters view.',
+        'this is the feed view.',
       ),
     );
   }
