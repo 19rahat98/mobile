@@ -10,9 +10,7 @@ abstract class CacheBloc<Event, State> extends Bloc<Event, State> {
     State initialState, {
     Logger? logger,
   })  : _logger = logger ?? Logger(),
-        super(initialState) {
-    _bePersistant();
-  }
+        super(initialState);
 
   final Logger _logger;
 
@@ -59,18 +57,15 @@ abstract class CacheBloc<Event, State> extends Bloc<Event, State> {
     }
   }
 
-  Future<void> onPersist(State saveState) async {}
-
   /// [persist] is used to persist the [Bloc] state to
   /// [storage].
-  Future<void> persist(String id) async {
+  Future<void> persist(State state) async {
     final result = toJson(state);
 
     if (result == null) {
       return;
     }
 
-    await onPersist(state);
     await storage.write(id, result);
   }
 
@@ -80,22 +75,15 @@ abstract class CacheBloc<Event, State> extends Bloc<Event, State> {
     _storage = storage;
   }
 
-  StreamSubscription<State>? _listener;
-
-  Future<void> _bePersistant() async {
-    await _listener?.cancel();
-
-    _listener = stream.listen((_) async {
-      await persist(id);
-    });
-
-    await persist(id);
+  @override
+  Future<void> onChange(Change<State> change) async {
+    super.onChange(change);
+    await persist(change.nextState);
   }
 
   @override
   Future<void> close() async {
-    await persist(id);
-    await _listener?.cancel();
+    await persist(state);
     await super.close();
   }
 
