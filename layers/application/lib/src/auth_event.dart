@@ -11,8 +11,8 @@ class _Init extends AuthEvent {
   List<Object?> get props => [];
 }
 
-class _SignIn extends AuthEvent {
-  const _SignIn({required this.needsOnboarding});
+class _Authenticate extends AuthEvent {
+  const _Authenticate({required this.needsOnboarding});
 
   final bool needsOnboarding;
 
@@ -34,20 +34,20 @@ class _Unlock extends AuthEvent {
   List<Object?> get props => [];
 }
 
-class _SignOut extends AuthEvent {
-  const _SignOut();
+class _RemoveAuthentication extends AuthEvent {
+  const _RemoveAuthentication();
 
   @override
   List<Object?> get props => [];
 }
 
 extension AuthBlocX on AuthBloc {
-  void signIn({required bool needsOnboarding}) {
-    add(_SignIn(needsOnboarding: needsOnboarding));
+  void authenticate({required bool needsOnboarding}) {
+    add(_Authenticate(needsOnboarding: needsOnboarding));
   }
 
-  void signOut() {
-    add(const _SignOut());
+  void removeAuthentication() {
+    add(const _RemoveAuthentication());
   }
 
   void lock() {

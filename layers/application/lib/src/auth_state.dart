@@ -36,7 +36,9 @@ class _Authenticated extends AuthState {
   bool get needsOnboarding => this is _NeedsOnboarding;
   bool get isLocked => this is _Locked;
 
-  Map<String, dynamic> toJson() => <String, dynamic>{'authState': runtimeType};
+  Map<String, dynamic> toJson() =>
+      // ignore: no_runtimetype_tostring
+      <String, dynamic>{'authState': '$runtimeType'};
 
   @override
   List<Object> get props => [];

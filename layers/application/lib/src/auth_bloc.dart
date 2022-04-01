@@ -13,8 +13,8 @@ typedef _Emitter = Emitter<AuthState>;
 class AuthBloc extends CacheBloc<AuthEvent, AuthState> {
   AuthBloc() : super(const _Loading()) {
     on<_Init>(_init);
-    on<_SignIn>(_signIn);
-    on<_SignOut>(_signOut);
+    on<_Authenticate>(_authenticate);
+    on<_RemoveAuthentication>(_removeAuthentication);
     on<_Lock>(_lock);
     on<_Unlock>(_unlock);
 
@@ -30,7 +30,7 @@ class AuthBloc extends CacheBloc<AuthEvent, AuthState> {
     await hydrate(emit);
   }
 
-  Future<void> _signIn(_SignIn event, _Emitter emit) async {
+  Future<void> _authenticate(_Authenticate event, _Emitter emit) async {
     if (event.needsOnboarding) {
       emit(const _NeedsOnboarding());
     } else {
@@ -38,7 +38,10 @@ class AuthBloc extends CacheBloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _signOut(_SignOut event, _Emitter emit) async {
+  Future<void> _removeAuthentication(
+    _RemoveAuthentication event,
+    _Emitter emit,
+  ) async {
     emit(const _NotAuthenticated());
   }
 
