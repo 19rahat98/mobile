@@ -1,16 +1,19 @@
 import 'dart:async';
 
+import 'package:application/util/cache_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:data/data.dart';
 import 'package:domain/domain.dart';
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'profile_bloc.g.dart';
 part 'profile_event.dart';
 part 'profile_state.dart';
 
 typedef _Emitter = Emitter<ProfileState>;
 
-class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+class ProfileBloc extends CacheBloc<ProfileEvent, ProfileState> {
   ProfileBloc({
     required IProfileRemote profileRepo,
     required IProfileCache profileCache,
@@ -31,19 +34,28 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   late String? _profileId;
 
-  Future<void> _init(_Init init, _Emitter emit) async {
-    late PreProfile profile;
+  @override
+  Future<void> onChange(Change<ProfileState> change) async {
+    super.onChange(change);
 
-    final cachedResult = await _profileCache.profile();
-    if (cachedResult.isSuccess && cachedResult.value != null) {
-      profile = cachedResult.value!;
-      await emitProfile(emit, profile);
+    if (change.nextState.isReady) {
+      final ready = change.nextState.asReady;
+
+      if (ready.profile != null) {
+        await _profileCache.save(ready.profile!);
+      }
     }
+  }
 
-    if (cachedResult.isError || cachedResult.value == null) {
+  Future<void> _init(_Init init, _Emitter emit) async {
+    await hydrate(emit);
+
+    if (!state.isReady || state.asReady.profile == null) {
       emit(const _Ready(null));
       return;
     }
+
+    final profile = state.asReady.profile!;
 
     final remoteResult = await _profileRepo.profile(profile.id);
 
@@ -54,16 +66,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     final result = remoteResult.value;
 
-    if (result == null) {
-      emit(const _Ready(null));
-      return;
-    }
-
-    await _profileCache.save(result);
     await emitProfile(emit, result);
   }
 
-  Future<void> emitProfile(_Emitter emit, PreProfile profile) async {
+  Future<void> emitProfile(_Emitter emit, PreProfile? profile) async {
+    if (profile == null) {
+      return emit(const _Ready(null));
+    }
+
     if (profile.isDetailed) {
       emit(_Ready(profile.asDetailed()));
     } else {
@@ -71,57 +81,38 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  FutureOr<PreProfile?> _getProfile(_Emitter emit, [String? id]) async {
-    if (state is _Ready) {
-      return (state as _Ready).profile;
+  bool _canUpdateProfile(_Emitter emit) {
+    if (!state.isReady || state.asReady.profile == null) {
+      emit(const _Error('Profile not loaded'));
+      return false;
     }
 
-    final cachedResult = await _profileCache.profile();
+    final profile = state.asReady.profile!;
 
-    if (cachedResult.isSuccess && cachedResult.value != null) {
-      return cachedResult.value;
+    if (!profile.isDetailed) {
+      emit(_OnBoardingNeeded(profile));
+      return false;
     }
 
-    if (id == null) {
-      return null;
-    }
-
-    _profileId = id;
-
-    final remoteResult = await _profileRepo.profile(_profileId!);
-
-    if (remoteResult.isError) {
-      emit(const _Error('Error fetching profile'));
-      return null;
-    }
-
-    if (remoteResult.value != null) {
-      await emitProfile(emit, remoteResult.value!);
-      await _profileCache.save(remoteResult.value!);
-    } else {
-      emit(const _Ready(null));
-    }
-
-    return null;
+    return true;
   }
 
   Future<void> _updateName(
     _UpdateName event,
     _Emitter emit,
   ) async {
-    final profile = await _getProfile(emit);
-
-    if (profile == null) {
+    if (!_canUpdateProfile(emit)) {
       return;
     }
 
-    await _updateProfile(
-      profile.asDetailed().copyWith(
-            firstName: event.firstName,
-            lastName: event.lastName,
-          ),
-      emit,
-    );
+    final profile = state.asReady.profile!;
+
+    final updatedProfile = profile.asDetailed().copyWith(
+          firstName: event.firstName,
+          lastName: event.lastName,
+        );
+
+    await _updateProfile(updatedProfile, emit);
   }
 
   Future<void> _login(
@@ -138,8 +129,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     final result = loginResult.value;
 
     emit(_Ready(result));
-
-    await _profileCache.save(result);
   }
 
   Future<void> _logout(
@@ -161,16 +150,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     _UpdateEmail event,
     _Emitter emit,
   ) async {
-    final profile = await _getProfile(emit);
-
-    if (profile == null) {
+    if (!_canUpdateProfile(emit)) {
       return;
     }
 
-    await _updateProfile(
-      profile.asDetailed().copyWith(email: event.email),
-      emit,
-    );
+    final profile = state.asReady.profile!;
+
+    final updatedProfile = profile.asDetailed().copyWith(email: event.email);
+
+    await _updateProfile(updatedProfile, emit);
   }
 
   Future<void> _updateProfile(Profile profile, _Emitter emit) async {
@@ -183,8 +171,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     final result = updateResult.value;
 
-    await _profileCache.save(result);
-
     emit(_Ready(result));
+  }
+
+  @override
+  ProfileState? fromJson(Map<String, dynamic>? json) {
+    if (json != null) {
+      return _Ready.fromJson(json);
+    }
+
+    return null;
+  }
+
+  @override
+  Map<String, dynamic>? toJson(ProfileState state) {
+    if (state.isReady) {
+      return state.asReady.toJson();
+    }
+
+    return null;
   }
 }
