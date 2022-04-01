@@ -7,11 +7,15 @@ class PinScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('PIN'),
+    return WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('PIN'),
+          leading: const SizedBox.shrink(),
+        ),
+        body: const PinView(),
       ),
-      body: const PinView(),
+      onWillPop: () async => false,
     );
   }
 }

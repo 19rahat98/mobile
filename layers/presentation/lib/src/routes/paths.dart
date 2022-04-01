@@ -7,6 +7,7 @@ class Paths {
   static OnboardingPath get onboarding => OnboardingPath();
   static HomePath get home => HomePath();
   static Path get pin => Path('pin');
+  static Path get lock => Path('lock');
   static Path get profile => Path('profile');
 }
 

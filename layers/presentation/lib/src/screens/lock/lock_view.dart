@@ -1,29 +1,27 @@
 import 'package:application/application.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:presentation/src/routes/paths.dart';
 
-class ProfileView extends StatelessWidget {
-  const ProfileView({Key? key}) : super(key: key);
+class LockView extends StatelessWidget {
+  const LockView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        children: [
+        children: <Widget>[
           ElevatedButton(
             onPressed: () {
-              context.push(Paths.pin.path);
+              context.read<AuthBloc>().unlock();
             },
-            child: const Text('require lock'),
+            child: const Text('unlock'),
           ),
           ElevatedButton(
             onPressed: () {
               context.read<ProfileBloc>().logout();
             },
             child: const Text('logout'),
-          ),
+          )
         ],
       ),
     );

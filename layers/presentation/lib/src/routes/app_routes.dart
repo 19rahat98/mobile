@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:application/application.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:presentation/src/routes/paths.dart';
@@ -11,6 +12,7 @@ import 'package:presentation/src/screens/create_profile/create_profile_screen.da
 import 'package:presentation/src/screens/create_splitter/create_splitter_screen.dart';
 import 'package:presentation/src/screens/forgot_password/forgot_password_screen.dart';
 import 'package:presentation/src/screens/home/home_screen.dart';
+import 'package:presentation/src/screens/lock/lock_screen.dart';
 import 'package:presentation/src/screens/login/login_screen.dart';
 import 'package:presentation/src/screens/onboarding/onboarding_screen.dart';
 import 'package:presentation/src/screens/pin/pin_screen.dart';
@@ -33,6 +35,10 @@ GoRouter appRoutes({
       GoRoute(
         path: Paths.pin.path,
         builder: (_, state) => const PinScreen(),
+      ),
+      GoRoute(
+        path: Paths.lock.path,
+        builder: (_, state) => const LockScreen(),
       ),
       GoRoute(
         path: Paths.welcome.goPath,
@@ -101,37 +107,40 @@ GoRouter appRoutes({
     redirect: (state) {
       final subLocation = state.subloc;
       final onWelcomeScreen = subLocation.startsWith(Paths.welcome.path);
-      final onOnboarding = subLocation.startsWith(Paths.onboarding.path);
+      final onOnboardingScreen = subLocation.startsWith(Paths.onboarding.path);
 
       // if not logged in, redirect to welcome screen
       // if not there already
       if (!authBloc.state.isAuthenticated) {
-        if (onWelcomeScreen || onOnboarding) {
+        if (onWelcomeScreen || onOnboardingScreen) {
           return null;
         }
 
         return Paths.welcome.path;
       }
 
-      final authenticatedState = authBloc.state.asAuthenticated;
+      final authenticatedState = authBloc.state;
+      final onLockScreen = subLocation.startsWith(Paths.lock.path);
 
-      // if on welcome screen (and authenticated),
-      // redirect to home screen
-      if (onWelcomeScreen || onOnboarding) {
-        // go to onboarding
-        if (authenticatedState.needsOnboarding) {
-          if (onOnboarding) {
-            return null;
-          }
-
-          return Paths.onboarding.path;
-
-          // lock the screen
-        } else if (authenticatedState.isLocked) {
-          return Paths.pin.path;
+      if (authenticatedState.isLocked) {
+        if (onLockScreen) {
+          return null;
         }
 
-        return '/';
+        return Paths.lock.path;
+      }
+
+      // go to onboarding if needed
+      if (authenticatedState.isNeedsOnboarding) {
+        if (onOnboardingScreen) {
+          return null;
+        }
+
+        return Paths.onboarding.path;
+      }
+
+      if (onWelcomeScreen || onOnboardingScreen || onLockScreen) {
+        return Paths.home.feed.path;
       }
 
       // no need to redirect
