@@ -13,6 +13,7 @@ class ThemeCache extends HiveCache implements IThemeCache {
 
   @override
   Future<RequestResult<ThemeMode>> getThemeMode() async {
+    await cacheInit();
     try {
       final result = cache.get(
             _Keys.themeMode,
@@ -29,6 +30,7 @@ class ThemeCache extends HiveCache implements IThemeCache {
 
   @override
   Future<void> setThemeMode(ThemeMode themeMode) async {
+    await cacheInit();
     await cache.put(_Keys.themeMode, themeMode.name);
   }
 }

@@ -4,13 +4,14 @@ import 'package:data/src/profile/i_profile_repos.dart';
 import 'package:data/src/util/hive_cache.dart';
 import 'package:data/src/util/request_result.dart';
 import 'package:domain/domain.dart';
-import 'package:hive/hive.dart';
 
 class ProfileCache extends HiveCache<Map> implements IProfileCache {
-  ProfileCache({Box? box}) : super('profile', box: box);
+  ProfileCache() : super('profile');
 
   @override
   Future<RequestResult<Profile?>> profile() async {
+    await cacheInit();
+
     try {
       final result = cache.get('profile');
 
@@ -30,6 +31,8 @@ class ProfileCache extends HiveCache<Map> implements IProfileCache {
 
   @override
   Future<RequestResult<void>> save(PreProfile profile) async {
+    await cacheInit();
+
     try {
       await cache.put('profile', profile.toJson());
 
@@ -41,6 +44,8 @@ class ProfileCache extends HiveCache<Map> implements IProfileCache {
 
   @override
   Future<RequestResult<void>> clear() async {
+    await cacheInit();
+
     try {
       await cache.delete('profile');
 
