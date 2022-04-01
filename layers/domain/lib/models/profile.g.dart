@@ -70,11 +70,7 @@ abstract class _$ProfileCWProxy {
 
   Profile firstName(String firstName);
 
-  Profile id(String id);
-
   Profile lastName(String lastName);
-
-  Profile phoneNumber(PhoneNumber phoneNumber);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Profile(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -85,9 +81,7 @@ abstract class _$ProfileCWProxy {
   Profile call({
     String? email,
     String? firstName,
-    String? id,
     String? lastName,
-    PhoneNumber? phoneNumber,
   });
 }
 
@@ -104,14 +98,7 @@ class _$ProfileCWProxyImpl implements _$ProfileCWProxy {
   Profile firstName(String firstName) => this(firstName: firstName);
 
   @override
-  Profile id(String id) => this(id: id);
-
-  @override
   Profile lastName(String lastName) => this(lastName: lastName);
-
-  @override
-  Profile phoneNumber(PhoneNumber phoneNumber) =>
-      this(phoneNumber: phoneNumber);
 
   @override
 
@@ -124,9 +111,7 @@ class _$ProfileCWProxyImpl implements _$ProfileCWProxy {
   Profile call({
     Object? email = const $CopyWithPlaceholder(),
     Object? firstName = const $CopyWithPlaceholder(),
-    Object? id = const $CopyWithPlaceholder(),
     Object? lastName = const $CopyWithPlaceholder(),
-    Object? phoneNumber = const $CopyWithPlaceholder(),
   }) {
     return Profile(
       email: email == const $CopyWithPlaceholder() || email == null
@@ -137,19 +122,10 @@ class _$ProfileCWProxyImpl implements _$ProfileCWProxy {
           ? _value.firstName
           // ignore: cast_nullable_to_non_nullable
           : firstName as String,
-      id: id == const $CopyWithPlaceholder() || id == null
-          ? _value.id
-          // ignore: cast_nullable_to_non_nullable
-          : id as String,
       lastName: lastName == const $CopyWithPlaceholder() || lastName == null
           ? _value.lastName
           // ignore: cast_nullable_to_non_nullable
           : lastName as String,
-      phoneNumber:
-          phoneNumber == const $CopyWithPlaceholder() || phoneNumber == null
-              ? _value.phoneNumber
-              // ignore: cast_nullable_to_non_nullable
-              : phoneNumber as PhoneNumber,
     );
   }
 }
@@ -179,7 +155,6 @@ Profile _$ProfileFromJson(Map json) => Profile._(
       email: json['email'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      phoneNumber: PhoneNumber.fromJson(json['phoneNumber'] as Map),
       isDetailed: json['isDetailed'] as bool,
     );
 
@@ -188,6 +163,5 @@ Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
       'id': instance.id,
       'firstName': instance.firstName,
       'lastName': instance.lastName,
-      'phoneNumber': instance.phoneNumber.toJson(),
       'email': instance.email,
     };

@@ -1,5 +1,4 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:domain/models/phone_number.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -38,19 +37,19 @@ class PreProfile extends Equatable {
 @JsonSerializable(constructor: '_')
 class Profile extends Equatable implements PreProfile {
   const Profile({
-    required this.id,
     required this.email,
     required this.firstName,
     required this.lastName,
-    required this.phoneNumber,
-  }) : isDetailed = true;
+  })  :
+        // id can only be set using [fromJson] (server)
+        id = 'Fake-ID',
+        isDetailed = true;
 
   const Profile._({
     required this.id,
     required this.email,
     required this.firstName,
     required this.lastName,
-    required this.phoneNumber,
     required this.isDetailed,
   });
 
@@ -68,7 +67,6 @@ class Profile extends Equatable implements PreProfile {
   final String id;
   final String firstName;
   final String lastName;
-  final PhoneNumber phoneNumber;
 
   @override
   final String email;
@@ -79,6 +77,6 @@ class Profile extends Equatable implements PreProfile {
         email,
         firstName,
         lastName,
-        phoneNumber,
+        isDetailed,
       ];
 }
