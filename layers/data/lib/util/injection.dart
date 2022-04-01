@@ -20,6 +20,7 @@ Future<void> prepareData(GetIt sl, {Env env = Env.PROD, Logger? logger}) async {
 
   dio.interceptors.add(RequestLogger());
 
+  sl.registerRepo<IAuthCache>(AuthCache.new);
   sl.registerRepo<IProfileRemote>(ProfileRemote.new);
   sl.registerRepo<IProfileCache>(ProfileCache.new);
   sl.registerRepo<IThemeCache>(ThemeCache.new);

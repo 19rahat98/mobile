@@ -28,7 +28,11 @@ Future<GetIt> prepareApplication({Env env = Env.PROD, Logger? logger}) async {
     ),
   );
 
-  sl.registerFactory(AuthBloc.new);
+  sl.registerFactory(
+    () => AuthBloc(
+      cache: sl.getRepo<IAuthCache, AuthCache>(),
+    ),
+  );
 
   sl.registerFactory(
     () => ThemeBloc(cache: sl.getRepo<IThemeCache, ThemeCache>()),
