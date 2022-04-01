@@ -20,30 +20,24 @@ class AuthBloc extends CacheBloc<AuthEvent, AuthStatus> {
     on<_RemoveAuthentication>(_removeAuthentication);
     on<_Lock>(_lock);
     on<_Unlock>(_unlock);
+    on<_ResetPin>(_resetPin);
 
     add(const _Init());
   }
 
   final IAuthCache _authCache;
 
-  /// to ensure that the authentication state is
-  /// accurate, we don't update the cache until
-  /// after the _Init event has been processed.
-  bool _allowCacheUpdate = false;
-
   @override
   Future<void> persist(AuthStatus state) async {
-    if (!_allowCacheUpdate) return;
-
     await _authCache.save(state);
   }
 
   Future<void> _init(_Init event, _Emitter emit) async {
     final result = await _authCache.load();
+
     if (result.isSuccess) {
       emit(result.value);
     }
-    _allowCacheUpdate = true;
   }
 
   Future<void> _authenticate(_Authenticate event, _Emitter emit) async {
@@ -67,6 +61,10 @@ class AuthBloc extends CacheBloc<AuthEvent, AuthStatus> {
 
   FutureOr<void> _unlock(_Unlock event, _Emitter emit) {
     emit(AuthStatus.authenticated);
+  }
+
+  FutureOr<void> _resetPin(_ResetPin event, _Emitter emit) {
+    emit(AuthStatus.pinNeeded);
   }
 
   @override

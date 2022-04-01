@@ -20,6 +20,13 @@ class _Authenticate extends AuthEvent {
   List<Object?> get props => [needsOnboarding];
 }
 
+class _ResetPin extends AuthEvent {
+  const _ResetPin();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class _Lock extends AuthEvent {
   const _Lock();
 
@@ -56,5 +63,9 @@ extension AuthBlocX on AuthBloc {
 
   void unlock() {
     add(const _Unlock());
+  }
+
+  void resetPin() {
+    add(const _ResetPin());
   }
 }
