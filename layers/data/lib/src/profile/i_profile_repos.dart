@@ -2,8 +2,8 @@ import 'package:data/src/util/request_result.dart';
 import 'package:domain/domain.dart';
 
 abstract class IProfileRemote {
-  Future<RequestResult<Profile>> login(String email);
-  Future<RequestResult<PreProfile>> create(String email);
+  Future<RequestResult<PreProfile>> login(String email, String password);
+  Future<RequestResult<PreProfile>> create(String email, String password);
   Future<RequestResult<PreProfile?>> profile(String id);
   Future<RequestResult<void>> logout();
   Future<RequestResult<Profile>> update(Profile profile);
