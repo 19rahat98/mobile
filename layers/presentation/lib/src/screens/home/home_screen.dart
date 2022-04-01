@@ -45,6 +45,14 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('HOME'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.push(Paths.profile.path);
+            },
+            icon: const Icon(Icons.person),
+          ),
+        ],
       ),
       body: TabBarView(
         controller: tabController,

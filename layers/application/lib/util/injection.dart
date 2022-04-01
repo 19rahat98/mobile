@@ -30,6 +30,10 @@ Future<GetIt> prepareApplication({Env env = Env.PROD, Logger? logger}) async {
 
   sl.registerFactory(AuthBloc.new);
 
+  sl.registerFactory(
+    () => ThemeBloc(cache: sl.getRepo<IThemeCache, ThemeCache>()),
+  );
+
   return sl;
 }
 

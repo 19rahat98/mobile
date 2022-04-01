@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:application/application.dart';
+import 'package:domain/domain.dart' as domain;
 import 'package:eleeos/util/nav_logger.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   late final ProfileBloc profileBloc;
   late final AuthBloc authBloc;
+  late final ThemeBloc themeBloc;
   late GoRouter router;
 
   @override
@@ -41,6 +43,7 @@ class _AppState extends State<App> {
 
     profileBloc = widget.getIt<ProfileBloc>();
     authBloc = widget.getIt<AuthBloc>();
+    themeBloc = widget.getIt<ThemeBloc>();
 
     router = appRoutes(
       navigatorObservers: [NavLogger(logger: widget.logger)],
@@ -54,6 +57,7 @@ class _AppState extends State<App> {
       providers: [
         BlocProvider.value(value: profileBloc),
         BlocProvider.value(value: authBloc),
+        BlocProvider.value(value: themeBloc),
       ],
       child: BlocListener<ProfileBloc, ProfileState>(
         listenWhen: (p, c) =>
@@ -88,8 +92,8 @@ class _AppState extends State<App> {
             authBloc.authenticate(needsOnboarding: false);
           }
         },
-        child: Builder(
-          builder: (context) {
+        child: BlocBuilder<ThemeBloc, ThemeState>(
+          builder: (context, state) {
             return MaterialApp.router(
               title: 'Eleeos',
               key: const Key('__app__'),
@@ -135,13 +139,24 @@ class _AppState extends State<App> {
                   popupMenuOpacity: 0.95,
                 ),
               ),
-              // themeMode: appConfig.themeMode.toThemeMode(),
-              themeMode: ThemeMode.light,
-              // themeMode: ThemeMode.dark,
+              themeMode: state.themeMode.toThemeMode(),
             );
           },
         ),
       ),
     );
+  }
+}
+
+extension on domain.ThemeMode {
+  ThemeMode toThemeMode() {
+    switch (this) {
+      case domain.ThemeMode.light:
+        return ThemeMode.light;
+      case domain.ThemeMode.dark:
+        return ThemeMode.dark;
+      case domain.ThemeMode.system:
+        return ThemeMode.system;
+    }
   }
 }

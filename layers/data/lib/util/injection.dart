@@ -22,6 +22,7 @@ Future<void> prepareData(GetIt sl, {Env env = Env.PROD, Logger? logger}) async {
 
   sl.registerRepo<IProfileRemote>(ProfileRemote.new);
   sl.registerRepo<IProfileCache>(ProfileCache.new);
+  sl.registerRepo<IThemeCache>(ThemeCache.new);
 }
 
 extension on GetIt {

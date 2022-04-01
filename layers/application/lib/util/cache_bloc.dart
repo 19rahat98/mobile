@@ -59,6 +59,8 @@ abstract class CacheBloc<Event, State> extends Bloc<Event, State> {
     }
   }
 
+  Future<void> onPersist(State saveState) async {}
+
   /// [persist] is used to persist the [Bloc] state to
   /// [storage].
   Future<void> persist(String id) async {
@@ -68,6 +70,7 @@ abstract class CacheBloc<Event, State> extends Bloc<Event, State> {
       return;
     }
 
+    await onPersist(state);
     await storage.write(id, result);
   }
 
