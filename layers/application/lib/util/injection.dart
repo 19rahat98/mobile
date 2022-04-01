@@ -38,6 +38,10 @@ Future<GetIt> prepareApplication({Env env = Env.PROD, Logger? logger}) async {
     () => ThemeBloc(cache: sl.getRepo<IThemeCache, ThemeCache>()),
   );
 
+  sl.registerFactory(
+    () => PinBloc(cache: sl.getRepo<IProfileCache, ProfileCache>()),
+  );
+
   return sl;
 }
 

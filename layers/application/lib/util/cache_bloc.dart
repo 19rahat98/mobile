@@ -78,6 +78,7 @@ abstract class CacheBloc<Event, State> extends Bloc<Event, State> {
   @override
   Future<void> onChange(Change<State> change) async {
     super.onChange(change);
+
     await persist(change.nextState);
   }
 
