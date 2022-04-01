@@ -7,14 +7,9 @@ class ProfileRemote extends IProfileRemote {
   Future<RequestResult<PreProfile>> login(String email, String password) async {
     return RequestResult.success(
       Profile(
-        id: 'id',
         email: email,
         firstName: 'firstName',
         lastName: 'lastName',
-        phoneNumber: const PhoneNumber(
-          phoneNumber: 'phoneNumber',
-          id: 'id',
-        ),
       ),
     );
   }
@@ -39,6 +34,11 @@ class ProfileRemote extends IProfileRemote {
     String email,
     String password,
   ) async {
-    return RequestResult.success(PreProfile(email: email, id: 'id'));
+    return RequestResult.success(PreProfile(email: email, id: '123'));
+  }
+
+  @override
+  Future<RequestResult<void>> forgotPassword(String email) async {
+    return const RequestResult.success(null);
   }
 }
