@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:eleeos/util/app_bloc_observer.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 
 Future<void> bootstrap(
@@ -24,6 +25,8 @@ Future<void> bootstrap(
   FlutterError.onError = (details) {
     loggr.e('Flutter Error', details.exceptionAsString(), details.stack);
   };
+
+  GoRouter.setUrlPathStrategy(UrlPathStrategy.path);
 
   await runZonedGuarded(
     () async {
