@@ -7,13 +7,7 @@ part of 'phone_number.dart';
 // **************************************************************************
 
 abstract class _$PhoneNumberCWProxy {
-  PhoneNumber createdAt(DateTime createdAt);
-
   PhoneNumber id(String id);
-
-  PhoneNumber isActive(bool isActive);
-
-  PhoneNumber isPrimary(bool isPrimary);
 
   PhoneNumber isVerified(bool isVerified);
 
@@ -26,10 +20,7 @@ abstract class _$PhoneNumberCWProxy {
   /// PhoneNumber(...).copyWith(id: 12, name: "My name")
   /// ````
   PhoneNumber call({
-    DateTime? createdAt,
     String? id,
-    bool? isActive,
-    bool? isPrimary,
     bool? isVerified,
     String? phoneNumber,
   });
@@ -42,16 +33,7 @@ class _$PhoneNumberCWProxyImpl implements _$PhoneNumberCWProxy {
   const _$PhoneNumberCWProxyImpl(this._value);
 
   @override
-  PhoneNumber createdAt(DateTime createdAt) => this(createdAt: createdAt);
-
-  @override
   PhoneNumber id(String id) => this(id: id);
-
-  @override
-  PhoneNumber isActive(bool isActive) => this(isActive: isActive);
-
-  @override
-  PhoneNumber isPrimary(bool isPrimary) => this(isPrimary: isPrimary);
 
   @override
   PhoneNumber isVerified(bool isVerified) => this(isVerified: isVerified);
@@ -68,30 +50,15 @@ class _$PhoneNumberCWProxyImpl implements _$PhoneNumberCWProxy {
   /// PhoneNumber(...).copyWith(id: 12, name: "My name")
   /// ````
   PhoneNumber call({
-    Object? createdAt = const $CopyWithPlaceholder(),
     Object? id = const $CopyWithPlaceholder(),
-    Object? isActive = const $CopyWithPlaceholder(),
-    Object? isPrimary = const $CopyWithPlaceholder(),
     Object? isVerified = const $CopyWithPlaceholder(),
     Object? phoneNumber = const $CopyWithPlaceholder(),
   }) {
     return PhoneNumber(
-      createdAt: createdAt == const $CopyWithPlaceholder() || createdAt == null
-          ? _value.createdAt
-          // ignore: cast_nullable_to_non_nullable
-          : createdAt as DateTime,
       id: id == const $CopyWithPlaceholder() || id == null
           ? _value.id
           // ignore: cast_nullable_to_non_nullable
           : id as String,
-      isActive: isActive == const $CopyWithPlaceholder() || isActive == null
-          ? _value.isActive
-          // ignore: cast_nullable_to_non_nullable
-          : isActive as bool,
-      isPrimary: isPrimary == const $CopyWithPlaceholder() || isPrimary == null
-          ? _value.isPrimary
-          // ignore: cast_nullable_to_non_nullable
-          : isPrimary as bool,
       isVerified:
           isVerified == const $CopyWithPlaceholder() || isVerified == null
               ? _value.isVerified
@@ -118,18 +85,12 @@ extension $PhoneNumberCopyWith on PhoneNumber {
 PhoneNumber _$PhoneNumberFromJson(Map json) => PhoneNumber(
       phoneNumber: json['phoneNumber'] as String,
       id: json['id'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      isPrimary: json['isPrimary'] as bool? ?? false,
       isVerified: json['isVerified'] as bool? ?? false,
-      isActive: json['isActive'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$PhoneNumberToJson(PhoneNumber instance) =>
     <String, dynamic>{
       'phoneNumber': instance.phoneNumber,
       'id': instance.id,
-      'isPrimary': instance.isPrimary,
       'isVerified': instance.isVerified,
-      'isActive': instance.isActive,
-      'createdAt': instance.createdAt.toIso8601String(),
     };

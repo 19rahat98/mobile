@@ -10,20 +10,14 @@ class PhoneNumber extends Equatable {
   const PhoneNumber({
     required this.phoneNumber,
     required this.id,
-    required this.createdAt,
-    this.isPrimary = false,
     this.isVerified = false,
-    this.isActive = true,
   });
 
   factory PhoneNumber.fromJson(Map srcJson) => _$PhoneNumberFromJson(srcJson);
 
   final String phoneNumber;
   final String id;
-  final bool isPrimary;
   final bool isVerified;
-  final bool isActive;
-  final DateTime createdAt;
 
   Map<String, dynamic> toJson() => _$PhoneNumberToJson(this);
 
@@ -31,9 +25,6 @@ class PhoneNumber extends Equatable {
   List<Object> get props => [
         id,
         phoneNumber,
-        isPrimary,
         isVerified,
-        isActive,
-        createdAt,
       ];
 }
