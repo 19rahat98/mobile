@@ -18,7 +18,7 @@ class _CycleThemeMode extends ThemeEvent {
   List<Object> get props => [];
 }
 
-extension ExampleBlocX on ThemeBloc {
+extension ThemeBlocX on ThemeBloc {
   void cycleThemeMode() {
     add(const _CycleThemeMode());
   }

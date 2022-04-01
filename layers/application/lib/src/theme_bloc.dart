@@ -27,16 +27,14 @@ class ThemeBloc extends CacheBloc<ThemeEvent, ThemeState> {
   final IThemeCache _themeCache;
 
   @override
-  Future<void> onPersist(ThemeState saveState) async {
-    await _themeCache.setThemeMode(saveState.themeMode);
+  Future<void> persist(ThemeState state) async {
+    await _themeCache.setThemeMode(state.themeMode);
   }
 
   Future<void> _init(_Init event, _Emitter emit) async {
-    await hydrate(emit);
-
-    // cache always has last say
     final themeMode = await _themeCache.getThemeMode();
 
+    // should always be successful
     if (themeMode.isSuccess) {
       emit(ThemeState(themeMode: themeMode.value));
     }
