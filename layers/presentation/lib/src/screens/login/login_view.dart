@@ -14,15 +14,9 @@ class LoginView extends StatelessWidget {
         children: [
           ElevatedButton(
             onPressed: () {
-              context.read<AuthBloc>().authenticate(needsOnboarding: true);
+              context.read<ProfileBloc>().login('email', 'password');
             },
-            child: const Text('login (require onboarding)'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              context.read<AuthBloc>().authenticate(needsOnboarding: false);
-            },
-            child: const Text('login (bypass onboarding)'),
+            child: const Text('login'),
           ),
           ElevatedButton(
             onPressed: () {

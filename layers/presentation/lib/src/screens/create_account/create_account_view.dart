@@ -12,7 +12,7 @@ class CreateAccountView extends StatelessWidget {
         children: <Widget>[
           ElevatedButton(
             onPressed: () {
-              context.read<AuthBloc>().authenticate(needsOnboarding: true);
+              context.read<ProfileBloc>().createProfile('email', 'password');
             },
             child: const Text('Create'),
           )

@@ -55,58 +55,92 @@ class _AppState extends State<App> {
         BlocProvider.value(value: profileBloc),
         BlocProvider.value(value: authBloc),
       ],
-      child: Builder(
-        builder: (context) {
-          return MaterialApp.router(
-            title: 'Eleeos',
-            key: const Key('__app__'),
-            restorationScopeId: '__app__',
-            debugShowCheckedModeBanner: false,
-            routeInformationParser: router.routeInformationParser,
-            routerDelegate: router.routerDelegate,
-            theme: FlexThemeData.light(
-              scheme: FlexScheme.blue,
-              surfaceMode: FlexSurfaceMode.highScaffoldLowSurfaces,
-              blendLevel: 4,
-              appBarStyle: FlexAppBarStyle.material,
-              appBarOpacity: 0.98,
-              tooltipsMatchBackground: true,
-              useSubThemes: true,
-              visualDensity: FlexColorScheme.comfortablePlatformDensity,
-              fontFamily: GoogleFonts.roboto().fontFamily,
-              subThemesData: const FlexSubThemesData(
-                bottomNavigationBarOpacity: 0.98,
-                navigationBarOpacity: 0.98,
-                navigationBarMutedUnselectedText: true,
-                navigationBarMutedUnselectedIcon: true,
-                inputDecoratorUnfocusedHasBorder: false,
-                popupMenuOpacity: 0.95,
-              ),
-            ),
-            darkTheme: FlexThemeData.dark(
-              scheme: FlexScheme.blue,
-              surfaceMode: FlexSurfaceMode.highScaffoldLowSurfaces,
-              blendLevel: 4,
-              appBarStyle: FlexAppBarStyle.background,
-              appBarOpacity: 0.98,
-              tooltipsMatchBackground: true,
-              useSubThemes: true,
-              visualDensity: FlexColorScheme.comfortablePlatformDensity,
-              fontFamily: GoogleFonts.roboto().fontFamily,
-              subThemesData: const FlexSubThemesData(
-                bottomNavigationBarOpacity: 0.98,
-                navigationBarOpacity: 0.98,
-                navigationBarMutedUnselectedText: true,
-                navigationBarMutedUnselectedIcon: true,
-                inputDecoratorUnfocusedHasBorder: false,
-                popupMenuOpacity: 0.95,
-              ),
-            ),
-            // themeMode: appConfig.themeMode.toThemeMode(),
-            themeMode: ThemeMode.light,
-            // themeMode: ThemeMode.dark,
-          );
+      child: BlocListener<ProfileBloc, ProfileState>(
+        listenWhen: (p, c) =>
+            // when states change completely
+            p.runtimeType != c.runtimeType ||
+            // when profile is set to null
+            (c.isReady && c.asReady.profile == null) ||
+            // when profile was null, but is now set
+            // (i.e. user just logged in)
+            (p.isReady &&
+                p.asReady.profile == null &&
+                ((c.isReady && c.asReady.profile != null) ||
+                    c.isOnboardingNeeded)),
+        listener: (context, state) {
+          if (!(state.isReady || state.isOnboardingNeeded)) {
+            authBloc.removeAuthentication();
+            return;
+          }
+
+          if (state.isOnboardingNeeded) {
+            authBloc.authenticate(needsOnboarding: true);
+            return;
+          }
+
+          final ready = state.asReady;
+
+          if (ready.profile == null) {
+            authBloc.removeAuthentication();
+          } else if (!ready.profile!.isDetailed) {
+            authBloc.authenticate(needsOnboarding: true);
+          } else if (ready.profile!.isDetailed) {
+            authBloc.authenticate(needsOnboarding: false);
+          }
         },
+        child: Builder(
+          builder: (context) {
+            return MaterialApp.router(
+              title: 'Eleeos',
+              key: const Key('__app__'),
+              restorationScopeId: '__app__',
+              debugShowCheckedModeBanner: false,
+              routeInformationParser: router.routeInformationParser,
+              routerDelegate: router.routerDelegate,
+              theme: FlexThemeData.light(
+                scheme: FlexScheme.blue,
+                surfaceMode: FlexSurfaceMode.highScaffoldLowSurfaces,
+                blendLevel: 4,
+                appBarStyle: FlexAppBarStyle.material,
+                appBarOpacity: 0.98,
+                tooltipsMatchBackground: true,
+                useSubThemes: true,
+                visualDensity: FlexColorScheme.comfortablePlatformDensity,
+                fontFamily: GoogleFonts.roboto().fontFamily,
+                subThemesData: const FlexSubThemesData(
+                  bottomNavigationBarOpacity: 0.98,
+                  navigationBarOpacity: 0.98,
+                  navigationBarMutedUnselectedText: true,
+                  navigationBarMutedUnselectedIcon: true,
+                  inputDecoratorUnfocusedHasBorder: false,
+                  popupMenuOpacity: 0.95,
+                ),
+              ),
+              darkTheme: FlexThemeData.dark(
+                scheme: FlexScheme.blue,
+                surfaceMode: FlexSurfaceMode.highScaffoldLowSurfaces,
+                blendLevel: 4,
+                appBarStyle: FlexAppBarStyle.background,
+                appBarOpacity: 0.98,
+                tooltipsMatchBackground: true,
+                useSubThemes: true,
+                visualDensity: FlexColorScheme.comfortablePlatformDensity,
+                fontFamily: GoogleFonts.roboto().fontFamily,
+                subThemesData: const FlexSubThemesData(
+                  bottomNavigationBarOpacity: 0.98,
+                  navigationBarOpacity: 0.98,
+                  navigationBarMutedUnselectedText: true,
+                  navigationBarMutedUnselectedIcon: true,
+                  inputDecoratorUnfocusedHasBorder: false,
+                  popupMenuOpacity: 0.95,
+                ),
+              ),
+              // themeMode: appConfig.themeMode.toThemeMode(),
+              themeMode: ThemeMode.light,
+              // themeMode: ThemeMode.dark,
+            );
+          },
+        ),
       ),
     );
   }

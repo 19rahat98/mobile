@@ -9,9 +9,9 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        context.read<AuthBloc>().removeAuthentication();
+        context.read<ProfileBloc>().logout();
       },
-      child: const Text('sign out'),
+      child: const Text('logout'),
     );
   }
 }
