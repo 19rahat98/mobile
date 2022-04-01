@@ -4,9 +4,7 @@ import 'package:application/util/cache_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-part 'auth_bloc.g.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 
@@ -17,6 +15,8 @@ class AuthBloc extends CacheBloc<AuthEvent, AuthState> {
     on<_Init>(_init);
     on<_SignIn>(_signIn);
     on<_SignOut>(_signOut);
+    on<_Lock>(_lock);
+    on<_Unlock>(_unlock);
 
     add(const _Init());
   }
@@ -31,28 +31,40 @@ class AuthBloc extends CacheBloc<AuthEvent, AuthState> {
   }
 
   Future<void> _signIn(_SignIn event, _Emitter emit) async {
-    emit(_Authenticated(needsOnboarding: event.needsOnboarding));
+    if (event.needsOnboarding) {
+      emit(const _NeedsOnboarding());
+    } else {
+      emit(const _Authenticated());
+    }
   }
 
   Future<void> _signOut(_SignOut event, _Emitter emit) async {
     emit(const _NotAuthenticated());
   }
 
+  FutureOr<void> _lock(_Lock event, Emitter<AuthState> emit) {
+    emit(const _Locked());
+  }
+
+  FutureOr<void> _unlock(_Unlock event, Emitter<AuthState> emit) {
+    emit(const _Authenticated());
+  }
+
   @override
   AuthState? fromJson(Map<String, dynamic>? json) {
-    if (json == null) {
-      return const _NotAuthenticated();
+    if (json != null) {
+      return _Authenticated.fromJson(json);
     }
 
-    return _Authenticated.fromJson(json);
+    return const _NotAuthenticated();
   }
 
   @override
   Map<String, dynamic>? toJson(AuthState state) {
-    if (state.isLoading) {
-      return null;
+    if (state.isAuthenticated) {
+      return state.asAuthenticated.toJson();
     }
 
-    return state.asAuthenticated.toJson();
+    return null;
   }
 }

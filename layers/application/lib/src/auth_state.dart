@@ -4,8 +4,7 @@ abstract class AuthState extends Equatable {
   const AuthState();
 
   @visibleForTesting
-  factory AuthState.authenticated({bool needsOnboarding = false}) =>
-      _Authenticated(needsOnboarding: needsOnboarding);
+  const factory AuthState.authenticated() = _Authenticated;
 
   @visibleForTesting
   const factory AuthState.notAuthenticated() = _NotAuthenticated;
@@ -16,19 +15,39 @@ abstract class AuthState extends Equatable {
   _Authenticated get asAuthenticated => this as _Authenticated;
 }
 
-@JsonSerializable()
 class _Authenticated extends AuthState {
-  const _Authenticated({required this.needsOnboarding});
+  const _Authenticated();
 
-  factory _Authenticated.fromJson(Map<String, dynamic> json) =>
-      _$AuthenticatedFromJson(json);
+  static _Authenticated? fromJson(Map<String, dynamic> json) {
+    final stateString = json['authState'] as String?;
 
-  Map<String, dynamic> toJson() => _$AuthenticatedToJson(this);
+    if (stateString == '$_Authenticated') {
+      return const _Authenticated();
+    } else if (stateString == '$_NeedsOnboarding') {
+      return const _NeedsOnboarding();
+    } else if (stateString == '$_Locked') {
+      // on hydration, lock is not needed
+      return const _Authenticated();
+    }
 
-  final bool needsOnboarding;
+    return null;
+  }
+
+  bool get needsOnboarding => this is _NeedsOnboarding;
+  bool get isLocked => this is _Locked;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{'authState': runtimeType};
 
   @override
-  List<Object> get props => [needsOnboarding];
+  List<Object> get props => [];
+}
+
+class _NeedsOnboarding extends _Authenticated {
+  const _NeedsOnboarding();
+}
+
+class _Locked extends _Authenticated {
+  const _Locked();
 }
 
 class _Loading extends AuthState {

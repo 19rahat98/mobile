@@ -20,6 +20,20 @@ class _SignIn extends AuthEvent {
   List<Object?> get props => [needsOnboarding];
 }
 
+class _Lock extends AuthEvent {
+  const _Lock();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class _Unlock extends AuthEvent {
+  const _Unlock();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class _SignOut extends AuthEvent {
   const _SignOut();
 
@@ -34,5 +48,13 @@ extension AuthBlocX on AuthBloc {
 
   void signOut() {
     add(const _SignOut());
+  }
+
+  void lock() {
+    add(const _Lock());
+  }
+
+  void unlock() {
+    add(const _Unlock());
   }
 }
