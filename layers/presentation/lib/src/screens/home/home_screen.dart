@@ -3,8 +3,6 @@ import 'package:presentation/src/routes/paths.dart';
 import 'package:presentation/src/screens/feed/feed_screen.dart';
 import 'package:presentation/src/screens/splitters/splitters_screen.dart';
 
-import 'home_view.dart';
-
 class TabData {
   const TabData({
     required this.name,

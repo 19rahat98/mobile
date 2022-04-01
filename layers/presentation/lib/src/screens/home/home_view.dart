@@ -12,7 +12,7 @@ class HomeView extends StatelessWidget {
         children: [
           ElevatedButton(
             onPressed: () {
-              context.push(Paths.home.profile.path);
+              context.push(Paths.profile.path);
             },
             child: const Text('profile'),
           ),
